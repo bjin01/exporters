@@ -86,7 +86,7 @@ Restart prometheus service and check the metrics and values using prometheus exp
 ```http://localhost:9090/graph```
 
 If you can see some results then feel free to continue with grafana dashboard.
-Feel free to import the 
+Feel free to import the [grafana-dashboard-panel.json](https://github.com/bjin01/exporters/blob/main/grafana-dashboard-panel.json)
 
 Feedbacks are highly appreciated.
 
