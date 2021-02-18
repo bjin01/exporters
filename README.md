@@ -2,7 +2,7 @@
 
 This is my first prometheus exporter that scrapes SUSE Manager to get some jobs and system information.
 
-![suma dashboard](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "suma dashboard")
+![suma dashboard](https://github.com/bjin01/exporters/blob/main/sample-dashboard.png "suma dashboard")
 ### Usage:
 Make sure you installed go1.13 or higher on your host. 
 
