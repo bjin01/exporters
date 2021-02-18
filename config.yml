@@ -2,36 +2,3 @@ server:
   apiurl: http://bjsuma.bo2go.home/rpc/api
   username: bjin
   password: suse1234
-
-method1:
-  methodname: systemgroup.listActiveSystemsInGroup
-  input_map:
-    1_systemGroupName: caasp
-       
-  out_variablenames:  
-    - id
-
-
-method2:
-  methodname: system.getRelevantErrata
-  input_map:
-    1_serverid: method1.id
-
-  out_variablenames: 
-    - id
-    - advisory_synopsis
-    - advisory_name
-    - advisory_type
-
-finalmethod:
-  methodname: system.scheduleApplyErrata
-  options:
-    meth2_depend_meth1: true
-  input_map:
-    1_serverid: method1.id
-    2_errataId: method2.array.id
-    3_earliestOccurrence: datetime.2020-12-23T09:45:00
-
-  out_variablenames: 
-    - actionId
-    
