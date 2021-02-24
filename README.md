@@ -1,6 +1,10 @@
 # Prometheus exporter - SUSE Manager / Uyuni
 
-This is my first prometheus exporter that scrapes SUSE Manager to get some jobs and system information.
+This is my first prometheus exporter that scrapes SUSE Manager to get some jobs and system information visualized in Grafana.
+
+* Number of Jobs in SUSE Manager (pending, failed, completed, archived)
+* Number of systems (active, inactive, outdated etc.)
+* Number of Systems by OS Version
 
 ![suma dashboard](https://github.com/bjin01/exporters/blob/main/sample-dashboard.png "suma dashboard")
 ### Usage:
@@ -23,7 +27,10 @@ server:
 
 For developers you have to runn below command to start a test and further code.
 
-```go run exporter.go -config ./config.yml```
+```
+cd src/github.com/bjin01/exporters
+go run *.go -config ./config.yml
+```
 
 Or for users executing the binary:
 ```./exporter -config ./config.yml```
@@ -35,13 +42,23 @@ With the curl output you should get a list of metrics that has go and suma metri
 ```
 # HELP suma_exporter_scrapes_total Current total SUMA scrapes.
 # TYPE suma_exporter_scrapes_total counter
-suma_exporter_scrapes_total 143
+suma_exporter_scrapes_total 1
 # HELP suma_jobs_archived_jobs Current number of archived jobs in SUSE Manager.
 # TYPE suma_jobs_archived_jobs counter
 suma_jobs_archived_jobs{type="archived_jobs"} 80
+# HELP suma_jobs_base_product Number of each base product in SUSE Manager
+# TYPE suma_jobs_base_product gauge
+suma_jobs_base_product{type=""} 1
+suma_jobs_base_product{type="CentOS 8 x86_64"} 1
+suma_jobs_base_product{type="SLES 12 SP4 x86_64"} 2
+suma_jobs_base_product{type="SLES 15 SP1 x86_64"} 5
+suma_jobs_base_product{type="SLES with RES 7 x86_64"} 2
+suma_jobs_base_product{type="SLES4SAP 15 SP1 x86_64"} 5
+suma_jobs_base_product{type="SLES4SAP 15 SP2 x86_64"} 1
+suma_jobs_base_product{type="Ubuntu 20.04"} 1
 # HELP suma_jobs_completed_jobs Current number of completed jobs in SUSE Manager.
 # TYPE suma_jobs_completed_jobs gauge
-suma_jobs_completed_jobs{type="completed_jobs"} 168
+suma_jobs_completed_jobs{type="completed_jobs"} 174
 # HELP suma_jobs_failed_jobs Current number of failed jobs in SUSE Manager.
 # TYPE suma_jobs_failed_jobs gauge
 suma_jobs_failed_jobs{type="failed_jobs"} 8
@@ -50,10 +67,10 @@ suma_jobs_failed_jobs{type="failed_jobs"} 8
 suma_jobs_pending_jobs{type="pending_jobs"} 2
 # HELP suma_systems_active_systems Number of active online systems in SUSE Manager.
 # TYPE suma_systems_active_systems gauge
-suma_systems_active_systems{type="active_systems"} 4
+suma_systems_active_systems{type="active_systems"} 6
 # HELP suma_systems_offline_systems Number of inactive systems in SUSE Manager.
 # TYPE suma_systems_offline_systems gauge
-suma_systems_offline_systems{type="offline_systems"} 14
+suma_systems_offline_systems{type="offline_systems"} 12
 # HELP suma_systems_outdated_systems Number of out of date systems in SUSE Manager.
 # TYPE suma_systems_outdated_systems gauge
 suma_systems_outdated_systems{type="outdated_systems"} 16
@@ -88,6 +105,8 @@ Restart prometheus service and check the metrics and values using prometheus exp
 
 If you can see some results then feel free to continue with grafana dashboard.
 Feel free to import the [grafana-dashboard-panel.json](https://github.com/bjin01/exporters/blob/main/grafana-dashboard-panel.json)
+
+__Cautious:__ Do not set too short scraping interval which will cause performance issues on SUSE Manager as the exporter has to make several xmlrpc api calls with each scraping. Every 5m is a reasonable value.
 
 Feedbacks are highly appreciated.
 

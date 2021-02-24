@@ -1,227 +1,306 @@
 {
-    "annotations": {
-      "list": [
-        {
-          "builtIn": 1,
-          "datasource": "-- Grafana --",
-          "enable": true,
-          "hide": true,
-          "iconColor": "rgba(0, 211, 255, 1)",
-          "name": "Annotations & Alerts",
-          "type": "dashboard"
-        }
-      ]
-    },
-    "editable": true,
-    "gnetId": null,
-    "graphTooltip": 0,
-    "id": 5,
-    "links": [],
-    "panels": [
+  "annotations": {
+    "list": [
       {
-        "datasource": "Prometheus",
-        "description": "",
-        "fieldConfig": {
-          "defaults": {
-            "color": {
-              "mode": "palette-classic"
-            },
-            "custom": {
-              "align": null,
-              "filterable": false
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "#EAB839",
-                  "value": 10
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            },
-            "unit": "none"
-          },
-          "overrides": []
-        },
-        "gridPos": {
-          "h": 8,
-          "w": 12,
-          "x": 0,
-          "y": 0
-        },
-        "id": 6,
-        "options": {
-          "displayMode": "lcd",
-          "orientation": "horizontal",
-          "reduceOptions": {
-            "calcs": [
-              "lastNotNull"
-            ],
-            "fields": "",
-            "values": false
-          },
-          "showUnfilled": true
-        },
-        "pluginVersion": "7.3.1",
-        "targets": [
-          {
-            "expr": "suma_systems_active_systems",
-            "format": "time_series",
-            "instant": false,
-            "interval": "",
-            "legendFormat": "Online Systems",
-            "refId": "A"
-          },
-          {
-            "expr": "suma_systems_offline_systems  ",
-            "format": "time_series",
-            "instant": false,
-            "interval": "",
-            "legendFormat": "Offline Systems",
-            "refId": "B"
-          },
-          {
-            "expr": "suma_systems_outdated_systems",
-            "format": "time_series",
-            "interval": "",
-            "legendFormat": "Outdated Systems",
-            "refId": "C"
-          },
-          {
-            "expr": "suma_systems_physical_systems",
-            "format": "time_series",
-            "interval": "",
-            "legendFormat": "Physicals",
-            "refId": "D"
-          },
-          {
-            "expr": "suma_systems_virtual_systems",
-            "interval": "",
-            "legendFormat": "VM's",
-            "refId": "E"
-          }
-        ],
-        "timeFrom": null,
-        "timeShift": null,
-        "title": "Information about Managed Systems",
-        "transparent": true,
-        "type": "bargauge"
-      },
-      {
-        "datasource": "Prometheus",
-        "description": "",
-        "fieldConfig": {
-          "defaults": {
-            "custom": {
-              "align": null,
-              "filterable": false
-            },
-            "mappings": [],
-            "thresholds": {
-              "mode": "absolute",
-              "steps": [
-                {
-                  "color": "green",
-                  "value": null
-                },
-                {
-                  "color": "red",
-                  "value": 80
-                }
-              ]
-            }
-          },
-          "overrides": []
-        },
-        "gridPos": {
-          "h": 8,
-          "w": 12,
-          "x": 0,
-          "y": 8
-        },
-        "id": 4,
-        "options": {
-          "colorMode": "value",
-          "graphMode": "area",
-          "justifyMode": "auto",
-          "orientation": "vertical",
-          "reduceOptions": {
-            "calcs": [
-              "last"
-            ],
-            "fields": "",
-            "values": false
-          },
-          "textMode": "value_and_name"
-        },
-        "pluginVersion": "7.3.1",
-        "targets": [
-          {
-            "expr": "suma_jobs_archived_jobs",
-            "format": "time_series",
-            "instant": false,
-            "interval": "",
-            "legendFormat": "Archived Jobs",
-            "refId": "A"
-          },
-          {
-            "expr": "suma_jobs_completed_jobs",
-            "instant": false,
-            "interval": "",
-            "intervalFactor": 2,
-            "legendFormat": "Completed Jobs",
-            "refId": "B"
-          },
-          {
-            "expr": "suma_jobs_failed_jobs",
-            "interval": "",
-            "legendFormat": "Failed Jobs",
-            "refId": "C"
-          },
-          {
-            "expr": "suma_jobs_pending_jobs",
-            "hide": false,
-            "interval": "",
-            "legendFormat": "Pending Jobs",
-            "refId": "D"
-          },
-          {
-            "expr": "suma_exporter_scrapes_total",
-            "interval": "",
-            "legendFormat": "No of Queries",
-            "refId": "E"
-          }
-        ],
-        "timeFrom": null,
-        "timeShift": null,
-        "title": "SUSE Manager - Number of Jobs",
-        "transparent": true,
-        "type": "stat"
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
       }
-    ],
-    "refresh": "5m",
-    "schemaVersion": 26,
-    "style": "dark",
-    "tags": [],
-    "templating": {
-      "list": []
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 5,
+  "links": [],
+  "panels": [
+    {
+      "datasource": "Prometheus-bjin",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Value"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "No OS found"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 13,
+        "x": 0,
+        "y": 0
+      },
+      "id": 8,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": false
+      },
+      "pluginVersion": "7.3.1",
+      "targets": [
+        {
+          "expr": "suma_jobs_base_product",
+          "format": "time_series",
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "{{type}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "OS Versions",
+      "transparent": true,
+      "type": "gauge"
     },
-    "time": {
-      "from": "now-30m",
-      "to": "now"
+    {
+      "datasource": "Prometheus-bjin",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 10
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 10,
+        "x": 0,
+        "y": 10
+      },
+      "id": 6,
+      "options": {
+        "displayMode": "lcd",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true
+      },
+      "pluginVersion": "7.3.1",
+      "targets": [
+        {
+          "expr": "suma_systems_active_systems",
+          "format": "time_series",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "Online Systems",
+          "refId": "A"
+        },
+        {
+          "expr": "suma_systems_offline_systems  ",
+          "format": "time_series",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "Offline Systems",
+          "refId": "B"
+        },
+        {
+          "expr": "suma_systems_outdated_systems",
+          "format": "time_series",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "Outdated Systems",
+          "refId": "C"
+        },
+        {
+          "expr": "suma_systems_physical_systems",
+          "format": "time_series",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "Physicals",
+          "refId": "D"
+        },
+        {
+          "expr": "suma_systems_virtual_systems",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "VM's",
+          "refId": "E"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Information about Managed Systems",
+      "transparent": true,
+      "type": "bargauge"
     },
-    "timepicker": {},
-    "timezone": "",
-    "title": "My SUSE Manager",
-    "uid": "SsJqSUPMk",
-    "version": 9
-  }
+    {
+      "datasource": "Prometheus-bjin",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 11,
+        "x": 0,
+        "y": 17
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.3.1",
+      "targets": [
+        {
+          "expr": "suma_jobs_archived_jobs",
+          "format": "time_series",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "Archived Jobs",
+          "refId": "A"
+        },
+        {
+          "expr": "suma_jobs_completed_jobs",
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "Completed Jobs",
+          "refId": "B"
+        },
+        {
+          "expr": "suma_jobs_failed_jobs",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "Failed Jobs",
+          "refId": "C"
+        },
+        {
+          "expr": "suma_jobs_pending_jobs",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "legendFormat": "Pending Jobs",
+          "refId": "D"
+        },
+        {
+          "expr": "suma_exporter_scrapes_total",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "No of Queries",
+          "refId": "E"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "SUSE Manager - Number of Jobs",
+      "transparent": true,
+      "type": "stat"
+    }
+  ],
+  "refresh": "5m",
+  "schemaVersion": 26,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "My SUSE Manager",
+  "uid": "SsJqSUPMk",
+  "version": 22
+}
