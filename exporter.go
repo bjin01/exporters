@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -67,17 +66,22 @@ var (
 		4: newJobsMetric("failed_jobs", "Current number of failed jobs in SUSE Manager.", prometheus.GaugeValue, nil),
 		5: newJobsMetric("archived_jobs", "Current number of archived jobs in SUSE Manager.", prometheus.CounterValue, nil),
 	}
+
+	productMetrics = metrics{
+		2: newJobsMetric("base_product", "Number of each base product in SUSE Manager", prometheus.GaugeValue, nil),
+	}
 )
 
 type Exporter struct {
-	suma_server_url     string
-	username            string
-	password            string
-	mutex               sync.RWMutex
-	up                  prometheus.Gauge
-	totalScrapes        prometheus.Counter
-	suma_jobMetrics     map[int]metricInfo
-	suma_systemsMetrics map[int]metricInfo
+	suma_server_url      string
+	username             string
+	password             string
+	mutex                sync.RWMutex
+	up                   prometheus.Gauge
+	totalScrapes         prometheus.Counter
+	suma_jobMetrics      map[int]metricInfo
+	suma_systemsMetrics  map[int]metricInfo
+	suma_baseprodMetrics map[int]metricInfo
 }
 
 func NewExporter(suma_server_url string, username string, password string, jobmetrics map[int]metricInfo, systemsMetrics map[int]metricInfo) *Exporter {
@@ -95,8 +99,9 @@ func NewExporter(suma_server_url string, username string, password string, jobme
 			Name:      "exporter_scrapes_total",
 			Help:      "Current total SUMA scrapes.",
 		}),
-		suma_jobMetrics:     jobmetrics,
-		suma_systemsMetrics: systemsMetrics,
+		suma_jobMetrics:      jobmetrics,
+		suma_systemsMetrics:  systemsMetrics,
+		suma_baseprodMetrics: productMetrics,
 	}
 }
 
@@ -133,7 +138,40 @@ func (e *Exporter) scrape(ch chan<- prometheus.Metric) (up float64) {
 		value, labelValue := e.query_suma(metric.Desc.String())
 		ch <- prometheus.MustNewConstMetric(metric.Desc, metric.Type, value, labelValue...)
 	}
+	for _, metric := range e.suma_baseprodMetrics {
+		values := e.query_suma_baseproducts(metric.Desc.String())
+		for a, b := range values {
+			labelValue := []string{"os=" + a}
+			value := float64(b)
+			ch <- prometheus.MustNewConstMetric(metric.Desc, metric.Type, value, labelValue...)
+		}
+
+	}
 	return 1
+}
+
+func (e *Exporter) query_suma_baseproducts(metric_desc string) map[string]int {
+	var final_base_prod map[string]int
+	client := xmlrpc.NewClient(e.suma_server_url)
+
+	f, err := client.Call("auth.login", e.username, e.password)
+
+	if err != nil {
+		log.Fatal("Couldn't login to suse manager host.")
+	}
+
+	if strings.Contains(metric_desc, "base_product") {
+		a := e.get_suma_systemid(client, f.String(), "system.listSystems")
+		serverid, _ := a.([]int)
+		log.Printf("lets see list of serverid as input: %v\n", serverid)
+		final_base_prod = e.get_suma_baseprod(client, f.String(), "system.getInstalledProducts", serverid)
+		log.Printf("final_base_prod is: %v\n", final_base_prod)
+		//labelNames := []string{"base_product"}
+		return final_base_prod
+
+	}
+	client.Call("auth.logout", f.String())
+	return final_base_prod
 }
 
 func (e *Exporter) query_suma(metric_desc string) (value float64, labels []string) {
@@ -227,66 +265,6 @@ func (e *Exporter) query_suma(metric_desc string) (value float64, labels []strin
 	client.Call("auth.logout", f.String())
 	labelNames := []string{"something went wrong"}
 	return 0.00, labelNames
-}
-
-func (e *Exporter) get_suma_values(client xmlrpc.Client, sessionkey string, api_method string) interface{} {
-
-	method := api_method
-	log.Printf("Calling: %v\n", method)
-	u, err := client.Call(method, sessionkey)
-	if err != nil {
-		log.Fatal("Couldn't get values: " + method)
-	}
-
-	a := getVal(u)
-	return a
-
-}
-
-func getVal(v xmlrpc.Value) interface{} {
-	for _, x := range v.Values() {
-		for _, y := range x.Members() {
-			fmt.Printf("%v: ", y.Name())
-			getvalue3(y.Value())
-		}
-	}
-	return len(v.Values())
-}
-
-func getvalue3(v xmlrpc.Value) interface{} {
-	z := v.Kind()
-	y := v
-	var return_val interface{}
-
-	switch f := z; f {
-	case 1:
-		//GetMembers(y.Members(), searchfield)
-	case 2:
-		fmt.Printf("\t%v\n", y.Bytes())
-	case 3:
-		fmt.Printf("\t%v\n", y.Bool())
-	case 4:
-		fmt.Printf("\t%s\n", y.Time())
-		//return y.Time
-	case 5:
-		fmt.Printf("%v\n", y.Double())
-	case 6: //this is a int type
-		fmt.Printf("\t integer %v\n", y.Int())
-		//return y.Int()
-
-	case 7: //this is a string type
-		fmt.Printf("\t%v\n", y.String())
-		//return y.String()
-
-	case 8: //this is a member type
-
-		//return_val = GetVal(y, searchfield, 0)
-	default:
-
-		//return_val = GetVal(y, searchfield, 0)
-	}
-	return return_val
-
 }
 
 func main() {
