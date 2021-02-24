@@ -141,7 +141,15 @@ func (e *Exporter) scrape(ch chan<- prometheus.Metric) (up float64) {
 	for _, metric := range e.suma_baseprodMetrics {
 		values := e.query_suma_baseproducts(metric.Desc.String())
 		for a, b := range values {
-			labelValue := []string{"os=" + a}
+			if strings.Contains(a, "SUSE Linux Enterprise Server for SAP Applications") {
+				a = strings.Replace(a, "SUSE Linux Enterprise Server for SAP Applications", "SLES4SAP", -1)
+			} else if strings.Contains(a, "SUSE Linux Enterprise Server") {
+				a = strings.Replace(a, "SUSE Linux Enterprise Server", "SLES", -1)
+			}
+			if strings.Contains(a, "Expanded Support") {
+				a = strings.Replace(a, "Expanded Support", "RES", -1)
+			}
+			labelValue := []string{a}
 			value := float64(b)
 			ch <- prometheus.MustNewConstMetric(metric.Desc, metric.Type, value, labelValue...)
 		}
