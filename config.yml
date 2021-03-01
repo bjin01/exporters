@@ -1,5 +1,5 @@
 server:
-  port: 9102
   apiurl: http://bjsuma.bo2go.home/rpc/api
   username: bjin
   password: suse1234
+  port: 9102
