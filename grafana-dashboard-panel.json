@@ -16,6 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 5,
+  "iteration": 1614594742962,
   "links": [],
   "panels": [
     {
@@ -56,7 +57,7 @@
       },
       "gridPos": {
         "h": 10,
-        "w": 13,
+        "w": 11,
         "x": 0,
         "y": 0
       },
@@ -90,6 +91,105 @@
       "title": "OS Versions",
       "transparent": true,
       "type": "gauge"
+    },
+    {
+      "datasource": "Prometheus",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "custom": {
+            "align": null,
+            "displayMode": "color-text",
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 13,
+        "x": 11,
+        "y": 0
+      },
+      "id": 10,
+      "options": {
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Total Scores"
+          }
+        ]
+      },
+      "pluginVersion": "7.3.1",
+      "targets": [
+        {
+          "expr": "suma_scores_system_currency",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{hostname}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Top 10 System Scores",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "critical": 1,
+              "hostname": 0,
+              "important": 2,
+              "total_scores": 3
+            },
+            "renameByName": {
+              "Value": "Total Scores",
+              "critical": "Critical Patches",
+              "hostname": "Hostname",
+              "important": "Important Patches",
+              "job": "",
+              "total_scores": ""
+            }
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Hostname",
+                "Critical Patches",
+                "Important Patches",
+                "Total Scores"
+              ]
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "table"
     },
     {
       "datasource": "Prometheus-bjin",
@@ -127,7 +227,7 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 10,
+        "w": 11,
         "x": 0,
         "y": 10
       },
@@ -219,10 +319,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
-        "w": 11,
-        "x": 0,
-        "y": 17
+        "h": 10,
+        "w": 13,
+        "x": 11,
+        "y": 12
       },
       "id": 4,
       "options": {
@@ -271,13 +371,6 @@
           "interval": "",
           "legendFormat": "Pending Jobs",
           "refId": "D"
-        },
-        {
-          "expr": "suma_exporter_scrapes_total",
-          "instant": true,
-          "interval": "",
-          "legendFormat": "No of Queries",
-          "refId": "E"
         }
       ],
       "timeFrom": null,
@@ -292,7 +385,25 @@
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "datasource": "Prometheus",
+        "error": null,
+        "filters": [
+          {
+            "condition": "",
+            "key": "hostname",
+            "operator": "!=",
+            "value": "testrhel02.bo2go.home"
+          }
+        ],
+        "hide": 0,
+        "label": null,
+        "name": "Filters",
+        "skipUrlSync": false,
+        "type": "adhoc"
+      }
+    ]
   },
   "time": {
     "from": "now-30m",
@@ -302,5 +413,5 @@
   "timezone": "",
   "title": "My SUSE Manager",
   "uid": "SsJqSUPMk",
-  "version": 22
+  "version": 34
 }
