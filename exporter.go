@@ -200,11 +200,7 @@ func (e *Exporter) query_suma_baseproducts(metric_desc string) map[string]int {
 	if strings.Contains(metric_desc, "base_product") {
 		a := e.get_suma_systemid(client, f.String(), "system.listSystems")
 		serverid, _ := a.([]int)
-		log.Printf("lets see list of serverid as input: %v\n", serverid)
 		final_base_prod = e.get_suma_baseprod(client, f.String(), "system.getInstalledProducts", serverid)
-		log.Printf("final_base_prod is: %v\n", final_base_prod)
-		//labelNames := []string{"base_product"}
-		//e.get_currency(client, f.String(), "system.getSystemCurrencyScores")
 		return final_base_prod
 
 	}
@@ -307,7 +303,6 @@ func (e *Exporter) query_suma(metric_desc string) (value float64, labels []strin
 }
 
 func main() {
-	listenAddress := ":9102"
 
 	metricsPath := "/metrics"
 
@@ -319,7 +314,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	listenAddress := ":" + cfg.Server.Port
 	log.Printf("Scraping %v as %v. exporter on port: %v", cfg.Server.ApiUrl, cfg.Server.Username, listenAddress)
 
 	exporter := NewExporter(cfg.Server.ApiUrl, cfg.Server.Username, cfg.Server.Password, jobMetrics, systemsMetrics)

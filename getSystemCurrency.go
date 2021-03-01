@@ -33,6 +33,7 @@ func (e *Exporter) makeithapopen(metric_desc string) []Currency_result {
 	for _, b := range result_final {
 		fmt.Printf("%v: \t%v, criticals: %v, important: %v\n", b.systemname, b.total_scores, b.critical_patches, b.important_patches)
 	}
+	client.Call("auth.logout", f.String())
 	return result_final
 }
 
@@ -50,14 +51,12 @@ func getTop10(s []Currency_result) []Currency_result {
 	}
 
 	sort.Slice(sid_list, func(i, j int) bool {
-		//fmt.Printf("see tempscores[sid_list[i]]: %v\n", tempscores[sid_list[i]])
 		return tempscores[sid_list[i]] > tempscores[sid_list[j]]
 	})
 	var counter int
 
 	for _, sid := range sid_list {
 		if counter < 10 {
-			//fmt.Printf("%-7v %v\n", sid, tempscores[sid])
 			for c, d := range s {
 				if d.serverid == sid {
 
@@ -125,24 +124,12 @@ func get_currency(client xmlrpc.Client, sessionkey string, api_method string) []
 		}
 
 	}
-	/* currency = Currency_result{
-		systemname:           "testsystem",
-		serverid:             123456,
-		critical_patches:     5,
-		important_patches:    8,
-		moderate_patches:     2,
-		low_security_patches: 1,
-		bug_fix_patches:      9,
-		enhancement_patches:  4,
-		total_scores:         20,
-	} */
 
 	return finallist
 }
 
 func getSystemName(v xmlrpc.Value, fname string) map[int]string {
 	var system = make(map[int]string)
-	//var systemlist []map[int]string
 
 	var temp_id int
 	var temp_sname string
@@ -151,23 +138,17 @@ func getSystemName(v xmlrpc.Value, fname string) map[int]string {
 			if y.Name() == "id" {
 
 				z := getvalue3(y.Value())
-				//fmt.Printf("id %v\n", z.(int))
 				temp_id, _ = z.(int)
 			}
 			if y.Name() == fname {
-				//fmt.Printf("value %v: \n", y.Name())
 				z := getvalue3(y.Value())
-				//fmt.Printf("systemname %v\n", z.(string))
 				temp_sname, _ = z.(string)
 			}
 
 		}
 		if temp_id != 0 && temp_sname != "" {
 			system[temp_id] = temp_sname
-
-			//systemlist = append(systemlist, system)
 		}
 	}
-	//fmt.Printf("see the map %v\n", system)
 	return system
 }
