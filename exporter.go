@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"sync"
 
@@ -17,7 +18,8 @@ const (
 )
 
 var (
-	jobLableNames = []string{"type"}
+	jobLableNames   = []string{"type"}
+	scoreLableNames = []string{"hostname", "total_scores", "important", "critical"}
 )
 
 type metricInfo struct {
@@ -51,6 +53,18 @@ func newSystemsMetric(metricName string, docString string, t prometheus.ValueTyp
 	}
 }
 
+func newScoreMetric(metricName string, docString string, t prometheus.ValueType, constLabels prometheus.Labels) metricInfo {
+	return metricInfo{
+		Desc: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, "scores", metricName),
+			docString,
+			scoreLableNames,
+			constLabels,
+		),
+		Type: t,
+	}
+}
+
 var (
 	sumaUp         = prometheus.NewDesc(prometheus.BuildFQName(namespace, "", "up"), "Was the last scrape of SUSE Manager successful.", nil, nil)
 	systemsMetrics = metrics{
@@ -70,6 +84,10 @@ var (
 	productMetrics = metrics{
 		2: newJobsMetric("base_product", "Number of each base product in SUSE Manager", prometheus.GaugeValue, nil),
 	}
+
+	scoretMetrics = metrics{
+		2: newScoreMetric("system_currency", "system currency of the top10 nodes", prometheus.GaugeValue, nil),
+	}
 )
 
 type Exporter struct {
@@ -82,6 +100,7 @@ type Exporter struct {
 	suma_jobMetrics      map[int]metricInfo
 	suma_systemsMetrics  map[int]metricInfo
 	suma_baseprodMetrics map[int]metricInfo
+	suma_scoretMetrics   map[int]metricInfo
 }
 
 func NewExporter(suma_server_url string, username string, password string, jobmetrics map[int]metricInfo, systemsMetrics map[int]metricInfo) *Exporter {
@@ -102,6 +121,7 @@ func NewExporter(suma_server_url string, username string, password string, jobme
 		suma_jobMetrics:      jobmetrics,
 		suma_systemsMetrics:  systemsMetrics,
 		suma_baseprodMetrics: productMetrics,
+		suma_scoretMetrics:   scoretMetrics,
 	}
 }
 
@@ -155,6 +175,15 @@ func (e *Exporter) scrape(ch chan<- prometheus.Metric) (up float64) {
 		}
 
 	}
+	for _, metric := range e.suma_scoretMetrics {
+		result := e.makeithapopen(metric.Desc.String())
+		for _, b := range result {
+			value := float64(b.total_scores)
+			labelValue := []string{b.systemname, strconv.Itoa(b.total_scores), strconv.Itoa(b.important_patches), strconv.Itoa(b.critical_patches)}
+			ch <- prometheus.MustNewConstMetric(metric.Desc, metric.Type, value, labelValue...)
+		}
+
+	}
 	return 1
 }
 
@@ -175,9 +204,11 @@ func (e *Exporter) query_suma_baseproducts(metric_desc string) map[string]int {
 		final_base_prod = e.get_suma_baseprod(client, f.String(), "system.getInstalledProducts", serverid)
 		log.Printf("final_base_prod is: %v\n", final_base_prod)
 		//labelNames := []string{"base_product"}
+		//e.get_currency(client, f.String(), "system.getSystemCurrencyScores")
 		return final_base_prod
 
 	}
+
 	client.Call("auth.logout", f.String())
 	return final_base_prod
 }
@@ -288,6 +319,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	log.Printf("Scraping %v as %v. exporter on port: %v", cfg.Server.ApiUrl, cfg.Server.Username, listenAddress)
 
 	exporter := NewExporter(cfg.Server.ApiUrl, cfg.Server.Username, cfg.Server.Password, jobMetrics, systemsMetrics)
