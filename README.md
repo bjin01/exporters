@@ -5,6 +5,7 @@ This is my first prometheus exporter that scrapes SUSE Manager to get some jobs 
 * Number of Jobs in SUSE Manager (pending, failed, completed, archived)
 * Number of systems (active, inactive, outdated etc.)
 * Number of Systems by OS Version
+* Top 10 Systems with highest system scores - means systems with number of patches outdated
 
 ![suma dashboard](https://github.com/bjin01/exporters/blob/main/sample-dashboard.png "suma dashboard")
 ### Usage:
