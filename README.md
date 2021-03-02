@@ -24,6 +24,7 @@ server:
   apiurl: http://your-host/rpc/api
   username: admin
   password: 12345678
+  port: 9102
 ```
 
 For developers you have to runn below command to start a test and further code.
@@ -44,6 +45,18 @@ With the curl output you should get a list of metrics that has go and suma metri
 # HELP suma_exporter_scrapes_total Current total SUMA scrapes.
 # TYPE suma_exporter_scrapes_total counter
 suma_exporter_scrapes_total 1
+# HELP suma_scores_system_currency system currency of the top10 nodes
+# TYPE suma_scores_system_currency gauge
+suma_scores_system_currency{critical="0",hostname="bjlx15",important="8",total_scores="288"} 288
+suma_scores_system_currency{critical="0",hostname="my15sp1test.bo2go.home",important="5",total_scores="152"} 152
+suma_scores_system_currency{critical="0",hostname="testrhel72.bo2go.home",important="10",total_scores="591"} 591
+suma_scores_system_currency{critical="1",hostname="pxetest.bo2go.home",important="9",total_scores="252"} 252
+suma_scores_system_currency{critical="1",hostname="testrhel02.bo2go.home",important="7",total_scores="418"} 418
+suma_scores_system_currency{critical="2",hostname="caasp05.bo2go.home",important="17",total_scores="631"} 631
+suma_scores_system_currency{critical="2",hostname="pampam.bo2go.home",important="3",total_scores="131"} 131
+suma_scores_system_currency{critical="2",hostname="smt1.bo2go.home",important="3",total_scores="156"} 156
+suma_scores_system_currency{critical="6",hostname="azure-sap-test.bo2go.home",important="45",total_scores="1694"} 1694
+suma_scores_system_currency{critical="6",hostname="tomcat2.bo2go.home",important="35",total_scores="1251"} 1251
 # HELP suma_jobs_archived_jobs Current number of archived jobs in SUSE Manager.
 # TYPE suma_jobs_archived_jobs counter
 suma_jobs_archived_jobs{type="archived_jobs"} 80
