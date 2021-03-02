@@ -7,7 +7,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/bjin01/autoapi/getyaml"
+	"github.com/bjin01/exporters/getyaml"
 	"github.com/bjin01/go-xmlrpc"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -314,7 +314,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	listenAddress := ":" + cfg.Server.Port
+	listenAddress := ":" + cfg.Server.Ports
 	log.Printf("Scraping %v as %v. exporter on port: %v", cfg.Server.ApiUrl, cfg.Server.Username, listenAddress)
 
 	exporter := NewExporter(cfg.Server.ApiUrl, cfg.Server.Username, cfg.Server.Password, jobMetrics, systemsMetrics)
