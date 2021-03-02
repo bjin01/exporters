@@ -8,7 +8,61 @@ This is my first prometheus exporter that scrapes SUSE Manager to get some jobs 
 * Top 10 Systems with highest system scores - means systems with number of patches outdated
 
 ![suma dashboard](https://github.com/bjin01/exporters/blob/main/sample-dashboard.png "suma dashboard")
-### Usage:
+## Usage:
+### For admins:
+Download the compiled binary to your local SUSE Manager host.
+The binary has been compiled and there is no need to install go library on your host. Just download it and use it.
+
+```
+cd /usr/local/bin
+wget https://raw.githubusercontent.com/bjin01/exporters/main/binary/suma-exporter
+chmod +x /usr/local/bin/suma-exporter
+```
+Create a configuration file and store it at a place where only root user has access as the file will contain the login password to suse manager.
+In my systemd service unit file I used a configuration file located here: ```/etc/suma-exporters/config.yml```
+
+Make sure you create a yaml config file that consist your SUSE Manager port, host and login information as below:
+The port number should be higher than 9100 in order to not conflict with other prometheus ports. 
+
+```
+server:
+  apiurl: http://your-host/rpc/api
+  username: admin
+  password: 12345678
+  port: 9102
+```
+Add the suma-exporter as a systemd service on SUSE Manager host:
+work as root user or with sudo
+```
+cd /etc/systemd/system
+wget https://raw.githubusercontent.com/bjin01/exporters/main/systemd/suma-exporter.service
+systemctl daemon-reload
+systemctl start suma-exporter.service
+```
+Test the running suma-exporter:
+```curl -v http://your-host:9102/metrics```
+You should get the metrics results displayed as shown further below.
+
+Last but not least do not forget to add the suma-exporter into /etc/prometheus/prometheus.yaml scraping job and restart prometheus.service on prometheus host.
+```
+# Scrape configurations
+scrape_configs:
+  # --------------------
+  # Monitor bjsuma.bo2go.home
+  # --------------------
+  - job_name: 'mgr-server'
+    scrape_interval: 360s
+    static_configs:
+      - targets:
+        - bjsuma.bo2go.home:9102 # bo suma exporter 
+```
+__Cautious:__ Do not set too short scraping interval too low which will cause performance issues on SUSE Manager as the exporter has to make several xmlrpc api calls with each scraping. For __large systems with over more than 200 managed systems__ I would recommend to set scraping interval less than 360 seconds. 
+
+The next logical step would be to add the new metrics into grafana dashboard.
+
+Feel free to import the [grafana-dashboard-panel.json](https://github.com/bjin01/exporters/blob/main/grafana-dashboard-panel.json) to your grafana.
+
+### For developers you have to runn below command to start a test and further coding.
 Make sure you installed go1.13 or higher on your host. 
 
 ```
@@ -17,17 +71,6 @@ bjsuma:~ # go version
 go version go1.14.3 linux/amd64
 
 ```
-
-Make sure you create a yaml config file that consist your SUSE Manager host and login information as below:
-```
-server:
-  apiurl: http://your-host/rpc/api
-  username: admin
-  password: 12345678
-  port: 9102
-```
-
-For developers you have to runn below command to start a test and further code.
 
 ```
 cd src/github.com/bjin01/exporters
@@ -98,29 +141,6 @@ suma_systems_virtual_systems{type="virtual_systems"} 17
 # TYPE suma_up gauge
 suma_up 1
 ```
-
-If data is correct then you can go to your prometheus server and add this target into your scrap job.
-
-This is my prometheus.yaml config I added:
-```
-# Scrape configurations
-scrape_configs:
-  # --------------------
-  # Monitor bjsuma.bo2go.home
-  # --------------------
-  - job_name: 'mgr-server'
-    static_configs:
-      - targets:
-        - bjsuma.bo2go.home:9102 # bo suma exporter 
-
-```
-Restart prometheus service and check the metrics and values using prometheus expression browser
-```http://localhost:9090/graph```
-
-If you can see some results then feel free to continue with grafana dashboard.
-Feel free to import the [grafana-dashboard-panel.json](https://github.com/bjin01/exporters/blob/main/grafana-dashboard-panel.json)
-
-__Cautious:__ Do not set too short scraping interval which will cause performance issues on SUSE Manager as the exporter has to make several xmlrpc api calls with each scraping. Every 5m is a reasonable value.
 
 Feedbacks are highly appreciated.
 
