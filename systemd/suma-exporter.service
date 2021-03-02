@@ -1,0 +1,11 @@
+[Unit]
+Description=SUSE Manager Prometheus Exporter
+Requires=taskomatic.service
+After=network.target taskomatic.service
+
+[Service]
+User=root
+ExecStart=/usr/local/bin/suma-exporters -config /etc/suma-exporters/config.yml
+
+[Install]
+WantedBy=multi-user.target
